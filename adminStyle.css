@@ -1,0 +1,20 @@
+div.copyRight a {
+    color:#aaa;
+}
+div.copyRight {
+    text-align:center;
+    /*text-transform:uppercase;*/
+
+    letter-spacing: 1px;
+    color:#aaa;
+    font-size:10px;
+    /*font-weight:bold;*/
+}
+div.updateHint {
+    background-color:#CAEBCA;
+    padding:5px 0;
+    margin:5px 100px;
+    color:#777;
+    font-weight:bold;
+    border:1px solid #6B9C6B;
+}
