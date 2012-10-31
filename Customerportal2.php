@@ -17,7 +17,7 @@ class Customerportal2 {
             }
 
             $adb->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence)
-                VALUES (?,?,?,?,?,?,?)', array($fieldid, $blockid, 'Customer Portal', 'Smarty/templates/modules/Colorizer/settings.png', 'Configure Customerportal', 'index.php?module=Customerportal2&action=admin&parenttab=Settings', $seq));
+                VALUES (?,?,?,?,?,?,?)', array($fieldid, $blockid, 'Customer Portal', 'modules/CustomerPortal2/icon.png', 'Configure Customerportal', 'index.php?module=Customerportal2&action=admin&parenttab=Settings', $seq));
 
 			$adb->query('ALTER TABLE  `vtiger_portalinfo` CHANGE  `user_password`  `user_password` VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL');
 			
