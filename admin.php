@@ -235,7 +235,7 @@ echo '<input type="button" class="button small edit" onclick="addField();" value
 echo '</div>';
 ?>
     </div>
-
+<br>
 <div class="copyRight">Customer Portal <?php echo Customerportal2::VERSION ?> by <a href="http://vtiger.stefanwarnat.de">Stefan Warnat</a><br>
     <?php Customerportal2::updateCheck() ?>
     <input type="button" class="crmbutton edit small"  value="Update Module" onclick="if(confirm('Start update?\n\nYou should update the customerportal, too!')) window.location.href='index.php?module=Customerportal2&action=autoupdate&parenttab=Settings';">

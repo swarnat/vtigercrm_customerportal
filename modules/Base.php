@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Stefan
- * Date: 09.09.12
- * Time: 13:39
- */
 class CP_Base
 {
     protected $module_name = "";
