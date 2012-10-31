@@ -51,11 +51,29 @@ function doQuery($query) {
 function doUpdate($data) {
     global $current_user;
 
-    $data = json_decode($data, true);
+    #$data = json_decode($data, true);
 
     require_once("include/Webservices/Update.php");
 
     return json_encode(vtws_update($data, $current_user));
+}
+function doCreate($module, $data) {
+    global $current_user, $adb;
+
+    $data = json_decode($data, true);
+
+    if(empty($data["assigned_user_id"])) {
+        $sql = "SELECT id FROM vtiger_ws_entity WHERE name = 'Users'";
+        $wsEntityId = $adb->query_result($adb->query($sql), 0, "id");
+
+        $data["assigned_user_id"] = $wsEntityId."x".$current_user->id;
+    }
+
+    require_once("include/Webservices/Create.php");
+
+    $return = vtws_create($module, $data, $current_user);
+
+    return json_encode($return);
 }
 
 $server->register('doQuery',
@@ -63,6 +81,12 @@ $server->register('doQuery',
             array('return' => 'xsd:string'),
 			'urn:server',
 			'urn:server#doQuery');
+
+$server->register('doCreate',
+			array('module' => 'xsd:string', 'data' => 'xsd:string'),
+            array('return' => 'xsd:string'),
+			'urn:server',
+			'urn:server#doCreate');
 
 $server->register('doUpdate',
 			array('data' => 'xsd:string'),
