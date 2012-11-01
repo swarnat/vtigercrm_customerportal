@@ -22,7 +22,7 @@ class Customerportal2 {
 			$adb->query('ALTER TABLE  `vtiger_portalinfo` CHANGE  `user_password`  `user_password` VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL');
 
             echo "Create table: vtiger_customerportal_columns<br>";
-            $adb->query('CREATE TABLE IF NOT EXISTS `vtiger_customerportal_columns` (
+            $adb->query("CREATE TABLE IF NOT EXISTS `vtiger_customerportal_columns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `customerportal_id` varchar(32) NOT NULL,
   `module` varchar(32) NOT NULL,
@@ -36,7 +36,7 @@ class Customerportal2 {
   `sort` smallint(6) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `customerportal_id` (`customerportal_id`,`module`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 		} else if($event_type == 'module.disabled') {
 			// TODO Handle actions when this module is disabled.
