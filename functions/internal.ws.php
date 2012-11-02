@@ -51,11 +51,17 @@ function doQuery($query) {
 function doUpdate($data) {
     global $current_user;
 
-    #$data = json_decode($data, true);
+    $data = json_decode($data, true);
 
     require_once("include/Webservices/Update.php");
 
-    return json_encode(vtws_update($data, $current_user));
+    try {
+        $return = vtws_update($data, $current_user);
+    } catch(Exception $exp) {
+        return json_encode(array("result" => "error", "code" => $exp->code, "message" => $exp->message));
+    }
+
+    return json_encode(array("result" => "ok", "return" => $return));
 }
 function doCreate($module, $data) {
     global $current_user, $adb;
