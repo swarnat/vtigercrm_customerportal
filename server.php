@@ -28,7 +28,7 @@ require_once(dirname(__FILE__).'/nusoap/nusoap.php');
 
 $server = new nusoap_server;
 
-$server->configureWSDL('server', 'urn:server');
+$server->configureWSDL('server', 'urn:server', $site_URL."/modules/Customerportal2/server.php");
 
 $server->wsdl->schemaTargetNamespace = 'urn:server';
 
