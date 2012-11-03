@@ -1,6 +1,6 @@
 <?
 class Customerportal2 {
-    const VERSION = "1.3";
+    const VERSION = "1.31";
 
     const DEBUG = false;
 
