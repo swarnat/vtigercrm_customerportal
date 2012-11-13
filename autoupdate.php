@@ -33,8 +33,6 @@
 
                 }
 
-require_once($moduleName.".php");
-
 $installed_version = $adb->query_result($adb->query("SELECT version FROM vtiger_tab WHERE name = '".$moduleName."'"), 0, "version");
 echo "&nbsp;&nbsp;&nbsp;1. Get current installed Version of Module '<b>".$moduleName."</b>' ... ".$installed_version."<br>";
 
