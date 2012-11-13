@@ -263,3 +263,36 @@ $server->register('changeLogin',
             array('return' => 'xsd:boolean'),
 			'urn:server',
 			'urn:server#changeLogin');
+
+function webformRelay($data) {
+    global $adb;
+    ob_start();
+    $_REQUEST = unserialize($data);
+
+    $result = $adb->pquery("SELECT * FROM vtiger_webforms WHERE publicid=? AND enabled=?", array($_REQUEST["publicid"], 1));
+
+    if ($adb->num_rows($result)) {
+
+        $webformsid = $adb->query_result($result, 0, "id");
+        $returnurl = $adb->query_result($result, 0, "returnurl");
+
+        $sql = "UPDATE vtiger_webforms SET returnurl = '' WHERE id = ".$webformsid;
+        $adb->query($sql);
+
+        require_once("modules/Webforms/capture.php");
+        ob_end_clean();
+
+        $sql = "UPDATE vtiger_webforms SET returnurl = '".$returnurl."' WHERE id = ".$webformsid;
+        $adb->query($sql);
+
+        return json_encode(array("returnurl" => $returnurl));
+
+    }
+
+    return true;
+}
+$server->register('webformRelay',
+			array('data' => 'xsd:string'),
+            array('return' => 'xsd:string'),
+			'urn:server',
+			'urn:server#webformRelay');
