@@ -61,6 +61,8 @@ $excludeModules = array("Colorizer","CustomerPortal","Customerportal2");
 </style>
 <script type="text/javascript">
 jQuery(function() {
+
+
     jQuery( ".sortable" ).sortable({
                 placeholder: "ui-state-highlight",
                 forcePlaceholderSize: true,
@@ -90,6 +92,21 @@ jQuery(function() {
 
 
 });
+function getAllBetween(firstEl,lastEl) {
+    var firstElement = jQuery(firstEl); // First Element
+    var lastElement = jQuery(lastEl); // Last Element
+    var collection = new Array(); // Collection of Elements
+    collection.push(firstElement); // Add First Element to Collection
+    jQuery(firstEl).nextAll().each(function(){ // Traverse all siblings
+    	var siblingID  = jQuery(this).attr("id"); // Get Sibling ID
+    	if (siblingID != jQuery(lastElement).attr("id")) { // If Sib is not LastElement
+    		collection.push(jQuery(this)); // Add Sibling to Collection
+    	} else { // Else, if Sib is LastElement
+    		return false; // Break Loop
+    	}
+    });
+    return collection; // Return Collection
+}
     function addField() {
         var fieldName = jQuery("#newField").val();
 
@@ -128,6 +145,44 @@ jQuery(function() {
 
         })
     }
+
+    function moveFieldset(direction, title, module, ele) {
+
+        jQuery.post("index.php?module=Customerportal2&action=Customerportal2Ajax&file=movefieldset", {
+            title: title,
+            direction: direction,
+            moduleName: module
+        }, function() {
+            var titleEle = jQuery(ele).closest("li");
+            var containerElements;
+
+            if(titleEle.nextAll(".fieldsetHead") != undefined) {
+                containerElements = getAllBetween(titleEle.next(), titleEle.nextAll(".fieldsetHead"));
+            } else {
+                containerElements = titleEle.nextAll();
+            }
+
+            containerElements = jQuery(containerElements);
+
+            if(titleEle.prevAll(".fieldsetHead") != undefined) {
+                var prevTitle = titleEle.prevAll(".fieldsetHead");
+
+                titleEle.remove();
+                jQuery.each(containerElements, function(index, value) {
+                    jQuery(value).remove();
+                });
+
+                titleEle.insertBefore(prevTitle);
+                containerElements.insertBefore(prevTitle);
+            }
+
+
+
+
+//            var img = $('h3').prev(); //get the element before this one
+//              $('h3').remove().insertBefore(img);
+        })
+    }
 </script>
 <?php
 $sql = "SELECT * FROM vtiger_tab WHERE presence = 0";
@@ -158,16 +213,15 @@ asort($module);
         Show Module:
         <select name='cp_module' id='cp_module'>
             <? foreach($module as $key => $label) { ?>
-                <option value="<?php echo $key ?>"><?php echo $label ?></option>
+                <option value="<?php echo $key ?>" <?php if($_GET["cp_module"]==$key) echo "selected='selected'"; ?>><?php echo $label ?></option>
             <? } ?>
         </select>
         <input type="submit" name="changeModule" value="change Module">
     </form>
 <?php
-if(empty($_GET["cp_module"]))
-    return;
+if(!empty($_GET["cp_module"])) {
 
-$sql = "SELECT * FROM vtiger_customerportal_columns WHERE module = ?  ORDER BY module, fieldset, sort";
+$sql = "SELECT * FROM vtiger_customerportal_columns WHERE module = ?  ORDER BY sort";
 $result = $adb->pquery($sql, array($_GET["cp_module"]));
 
 $moduleName = $_GET["cp_module"];
@@ -186,6 +240,7 @@ $lastFieldset = "";
     <div class="row Checkbox">Show</div>
     <div class="row Checkbox">Readonly</div>
     <div class="row Checkbox">Create</div>
+    <div class="row DefaultValue">default Value</div>
 </div>
 <div style="clear:both;"></div>
 
@@ -199,8 +254,9 @@ while($row = $adb->fetch_array($result)) {
 
 ?>
         <li class="fieldsetHead notSortable" title="<?=$row["fieldset"] ?>">
-            <?=$row["fieldset"] ?>
+            <?=$row["fieldset"] ?> (<a href='#' onclick='moveFieldset("up", "<?php echo $row["fieldset"] ?>","<?php echo $moduleName ?>", this); return false;'>up</a>)
         </li>
+
     <?
     }
 
@@ -212,7 +268,8 @@ while($row = $adb->fetch_array($result)) {
             <div class="row Checkbox valueShow"><input type="checkbox" onchange="saveValue(this, 'show', this.checked?1:0);" name="field[<?php echo $row["id"] ?>][show]" <?php echo $row["show"]=="1"?'checked="checked"':"" ?> /></div>
             <div class="row Checkbox valueReadonly"><input type="checkbox" onchange="saveValue(this, 'readonly', this.checked?1:0);" name="field[<?php echo $row["id"] ?>][readonly]" <?php echo $row["readonly"]=="1"?'checked="checked"':"" ?> /></div>
             <div class="row Checkbox valueCreate"><input type="checkbox" onchange="saveValue(this, 'create', this.checked?1:0);" name="field[<?php echo $row["id"] ?>][create]" <?php echo $row["create"]=="1"?'checked="checked"':"" ?> /></div>
-            <div class="row Checkbox valueSetFieldset" onclick="createFieldset(this);">Change Fieldset</div>
+            <div class="row DefaultValue"><input type="text" onchange="saveValue(this, 'default', this.value);" name="field[<?php echo $row["id"] ?>][default]" value="<?php echo $row["default"] ?>" /></div>
+            <div class="row DefaultValue valueSetFieldset" onclick="createFieldset(this);">Change Fieldset</div>
         </li>
     <?
 }
@@ -233,6 +290,7 @@ foreach($fields as $blockLabel => $block) {
 echo '</select>';
 echo '<input type="button" class="button small edit" onclick="addField();" value="add Field" />';
 echo '</div>';
+}
 ?>
     </div>
 <br>

@@ -34,4 +34,7 @@ $mod_strings = Array (
 "ACTION_HIDEBLOCK" => "Block verbergen",
 "ACTION_COLLAPSEBLOCK" => "Block zuklappen",
 "ACTION_EXPANDBLOCK" => "Block ausklappen",
+
+    # Added 1.1
+    "Send new Password" => "Neues Passwort zusenden",
 );

@@ -66,3 +66,37 @@ $server->register('login',
             array('return' => 'tns:user'),
 			'urn:server',
 			'urn:server#login');
+
+function lostpassword($username, $step) {
+    global $adb;
+
+    if($step == 1) {
+        $current_date = date("Y-m-d");
+        $sql = "select id, user_name, user_password,last_login_time, support_start_date, support_end_date, vtiger_portalinfo.type
+                    from vtiger_portalinfo
+                        inner join vtiger_customerdetails on vtiger_portalinfo.id=vtiger_customerdetails.customerid
+                        inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_portalinfo.id
+                    where vtiger_crmentity.deleted=0 and user_name=?
+                        and isactive=1 and vtiger_customerdetails.portal=1
+                        and (vtiger_customerdetails.support_start_date IS NULL OR vtiger_customerdetails.support_start_date <= ?) and (vtiger_customerdetails.support_end_date IS NULL OR vtiger_customerdetails.support_end_date >= ?)";
+        $result = $adb->pquery($sql, array($username, $current_date, $current_date), true);
+
+        if($adb->num_rows($result) == 0) {
+            return json_encode(array("result" => false));
+        }
+
+        $key = md5(microtime().$username);
+        $sql = "INSERT INTO vtiger_customerportal_lostpasswords SET login = ?, `key` = ?";
+        $adb->pquery($sql, array($username, $key));
+
+        return json_encode(array("result" => true, "key" => $key));
+
+    } else {
+
+    }
+}
+$server->register('lostpassword',
+			array('username' => 'xsd:string', 'step' => 'xsd:ind'),
+            array('return' => 'xsd:string'),
+			'urn:server',
+			'urn:server#lostpassword');

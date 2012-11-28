@@ -58,7 +58,7 @@ function doUpdate($data) {
     try {
         $return = vtws_update($data, $current_user);
     } catch(Exception $exp) {
-        return json_encode(array("result" => "error", "code" => $exp->code, "message" => $exp->message));
+        return json_encode(array("result" => "error", "code" => $exp->getCode(), "message" => $exp->message));
     }
 
     return json_encode(array("result" => "ok", "return" => $return));
@@ -75,9 +75,24 @@ function doCreate($module, $data) {
         $data["assigned_user_id"] = $wsEntityId."x".$current_user->id;
     }
 
+    $fields = json_decode(getFields($module, "CUSTOMERPORTAL_ID", false), true);
+
+    $newData = array();
+
+    foreach($fields as $fieldSetValue) {
+        foreach($fieldSetValue as $key => $value) {
+            if(!empty($data[$key])) {
+                $newData[$key] = $data[$key];
+            } elseif(empty($data[$key]) && !empty($value["default"])) {
+                $newData[$key] = $value["default"];
+            }
+        }
+    }
+    $newData["assigned_user_id"] = $data["assigned_user_id"];
+
     require_once("include/Webservices/Create.php");
 
-    $return = vtws_create($module, $data, $current_user);
+    $return = vtws_create($module, $newData, $current_user);
 
     return json_encode($return);
 }

@@ -20,7 +20,7 @@ if($nextFieldID != -1) {
     $result = $adb->query($sql);
     $nextIndex = $adb->query_result($result, 0, "sort");
 } else {
-    $sql = "SELECT MAX(sort) FROM vtiger_customerportal_columns WHERE module = ?";
+    $sql = "SELECT MAX(sort) as sort FROM vtiger_customerportal_columns WHERE module = ?";
     $result = $adb->pquery($sql, array($module));
     $nextIndex = $adb->query_result($result, 0, "sort") + 1;
 }

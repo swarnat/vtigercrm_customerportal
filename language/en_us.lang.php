@@ -26,4 +26,8 @@ $mod_strings = Array (
 "FIELD_TO_COLORIZER" => "colorized Field",
 "INDIVIDUAL_CONDITION" => "extern Condition",
 "NO_INDIVIVIDUAL_CONDITION" => "no extern Condition",
+
+
+    # Added 1.1
+    "Send new Password" => "send new Password",
 );

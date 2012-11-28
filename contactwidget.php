@@ -1,0 +1,2 @@
+<a href='#' onclick="sendNewPasswort(<?php echo intval($_REQUEST["record"]); ?>); return false;"><?php echo getTranslatedString("Send new Password", "Customerportal2"); ?></a>
+<div id="loadingIndicator"></div>

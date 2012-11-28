@@ -1,6 +1,6 @@
 <?
 class Customerportal2 {
-    const VERSION = "1.31";
+    const VERSION = "1.1";
 
     const DEBUG = false;
 
@@ -38,6 +38,12 @@ class Customerportal2 {
   KEY `customerportal_id` (`customerportal_id`,`module`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
+            require_once('vtlib/Vtiger/Module.php');
+            $module = Vtiger_Module::getInstance("Contacts");
+            $module->addLink('HEADERSCRIPT','Customerportal2','modules/Customerportal2/js/Customerportal2.js');
+
+            $module->addLink('DETAILVIEWWIDGET','Customerportal Management',"module=Customerportal2&action=Customerportal2Ajax&file=contactwidget&return_module=".'$MODULE$&record=$RECORD$');
+
 		} else if($event_type == 'module.disabled') {
 			// TODO Handle actions when this module is disabled.
 		} else if($event_type == 'module.enabled') {
@@ -49,6 +55,21 @@ class Customerportal2 {
 		} else if($event_type == 'module.postupdate') {
             switch(self::VERSION) {
                 case "1.1":
+                    $adb->query("CREATE TABLE `vtiger_customerportal_lostpasswords` (
+                    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+                    `login` VARCHAR( 128 ) NOT NULL ,
+                    `key` VARCHAR( 32 ) NOT NULL ,
+                    `timestamp` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+                    UNIQUE (
+                    `key`
+                    )
+                    ) ENGINE = INNODB;");
+
+                    require_once('vtlib/Vtiger/Module.php');
+                    $module = Vtiger_Module::getInstance("Contacts");
+                    $module->addLink('HEADERSCRIPT','Customerportal2','modules/Customerportal2/js/Customerportal2.js');
+
+                    $module->addLink('DETAILVIEWWIDGET','Customerportal Management',"module=Customerportal2&action=Customerportal2Ajax&file=contactwidget&return_module=".'$MODULE$&record=$RECORD$');
 
                    break;
             }

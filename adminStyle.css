@@ -18,3 +18,6 @@ div.updateHint {
     font-weight:bold;
     border:1px solid #6B9C6B;
 }
+div.DefaultValue {
+    width:170px;
+}
